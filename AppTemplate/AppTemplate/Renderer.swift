@@ -428,7 +428,7 @@ class Renderer: NSObject {
     static func applySwitchFacts(switch_: UISwitch, facts: Json) {
         for key in facts.keys {
             switch key {
-            case "checked":
+            case "isOn":
                 if let value = facts[key] as? Bool {
                     switch_.isOn = value
                 }

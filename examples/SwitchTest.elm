@@ -12,7 +12,7 @@ import Element
 import Element.Attributes
     exposing
         ( alignItems
-        , checked
+        , isOn
         , flexGrow
         , justifyContent
         , text
@@ -83,6 +83,6 @@ view model =
                 else
                     "Off"
             ]
-        , switch [ checked model, onTouchUpInside SwitchToggled ]
+        , switch [ isOn model, onTouchUpInside SwitchToggled ]
         , button [ text "Toggle It!", onTouchUpInside SwitchToggled ]
         ]

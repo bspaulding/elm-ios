@@ -60,7 +60,7 @@ module Element.Attributes
         , borderEndWidth
         , aspectRatio
         , direction
-        , checked
+        , isOn
         )
 
 {-| #Attributes
@@ -539,6 +539,6 @@ direction value =
     stringYogaProperty "direction" value
 
 
-checked : Bool -> Attribute msg
-checked value =
-    boolProperty "checked" value
+isOn : Bool -> Attribute msg
+isOn value =
+    boolProperty "isOn" value
