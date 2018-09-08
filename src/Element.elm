@@ -5,7 +5,7 @@ module Element
         , label
         , image
         , button
-          -- , slider
+        , slider
         , switch
         , column
         , row
