@@ -6,7 +6,7 @@ module Element
         , image
         , button
           -- , slider
-          -- , switch
+        , switch
         , column
         , row
         , map
