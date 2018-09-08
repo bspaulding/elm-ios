@@ -61,6 +61,10 @@ module Element.Attributes
         , aspectRatio
         , direction
         , isOn
+        , value
+        , minimumValue
+        , maximumValue
+        , isContinuous
         )
 
 {-| #Attributes
@@ -542,3 +546,22 @@ direction value =
 isOn : Bool -> Attribute msg
 isOn value =
     boolProperty "isOn" value
+
+value : Float -> Attribute msg
+value value =
+    floatProperty "value" value
+
+minimumValue : Float -> Attribute msg
+minimumValue value =
+    floatProperty "minimumValue" value
+
+maximumValue : Float -> Attribute msg
+maximumValue value =
+    floatProperty "maximumValue" value
+
+-- TODO minimumValueImage
+-- TODO maximumValueImage
+
+isContinuous : Bool -> Attribute msg
+isContinuous value =
+    boolProperty "isContinuous" value
