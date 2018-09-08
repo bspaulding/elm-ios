@@ -75,6 +75,17 @@ class Renderer: NSObject {
                         }
 
                         return button
+                    case "switch":
+                        let switch_: UISwitch = UISwitch(frame: CGRect.zero)
+                        applyFacts(view: switch_, facts: facts, tag: tag)
+                        if !handlers.isEmpty {
+                            let handlerNode = handlers[handlersIndex] as Json
+                            if let handlerOffset = handlerNode["offset"] as? Int, handlerOffset == offset, let funcs = handlerNode["funcs"] as? Json, let eventId = handlerNode["eventId"] as? UInt64 {
+                                addControlHandlers(funcs, id: eventId, view: switch_)
+                                handlersIndex += 1
+                            }
+                        }
+                        return switch_
                     case "image":
                         if let src = facts["src"] as? String, let imageUrl = URL(string: "assets/" + src) {
                             let fileName = imageUrl.deletingPathExtension().lastPathComponent
@@ -271,6 +282,8 @@ class Renderer: NSObject {
         case "parent":
             applyViewFacts(view: view, facts: facts)
             break
+        case "switch":
+            applySwitchFacts(switch_: view as! UISwitch, facts: facts)
         default:
             break
         }
@@ -404,6 +417,20 @@ class Renderer: NSObject {
                     view.backgroundColor = extractColor(value)
                 } else {
                     view.backgroundColor = nil
+                }
+                break
+            default:
+                break
+            }
+        }
+    }
+
+    static func applySwitchFacts(switch_: UISwitch, facts: Json) {
+        for key in facts.keys {
+            switch key {
+            case "checked":
+                if let value = facts[key] as? Bool {
+                    switch_.isOn = value
                 }
                 break
             default:
