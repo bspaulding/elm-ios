@@ -60,6 +60,7 @@ module Element.Attributes
         , borderEndWidth
         , aspectRatio
         , direction
+        , checked
         )
 
 {-| #Attributes
@@ -105,6 +106,9 @@ colorProperty name color =
                 ]
             )
 
+boolProperty : String -> Bool -> Attribute msg
+boolProperty name value =
+    Internal.property name (Json.bool value)
 
 
 {- Yoga Property Helpers -}
@@ -533,3 +537,8 @@ aspectRatio value =
 direction : String -> Attribute msg
 direction value =
     stringYogaProperty "direction" value
+
+
+checked : Bool -> Attribute msg
+checked value =
+    boolProperty "checked" value
