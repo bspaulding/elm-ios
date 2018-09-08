@@ -86,6 +86,17 @@ class Renderer: NSObject {
                             }
                         }
                         return switch_
+                    case "slider":
+                        let slider: UISlider = UISlider(frame: CGRect.zero)
+                        applyFacts(view: slider, facts: facts, tag: tag)
+                        if !handlers.isEmpty {
+                            let handlerNode = handlers[handlersIndex] as Json
+                            if let handlerOffset = handlerNode["offset"] as? Int, handlerOffset == offset, let funcs = handlerNode["funcs"] as? Json, let eventId = handlerNode["eventId"] as? UInt64 {
+                                addControlHandlers(funcs, id: eventId, view: slider)
+                                handlersIndex += 1
+                            }
+                        }
+                        return slider
                     case "image":
                         if let src = facts["src"] as? String, let imageUrl = URL(string: "assets/" + src) {
                             let fileName = imageUrl.deletingPathExtension().lastPathComponent
@@ -252,8 +263,9 @@ class Renderer: NSObject {
     static func addControlHandlers(_ handlers: Json, id: UInt64, view: UIControl) {
         for name in handlers.keys {
             if let eventType = extractEventType(name) {
-                view.addAction(event: eventType, { (_, event) in
-                    viewController.handleEvent(id: id, name: name, data: event)
+                view.addAction(event: eventType, { (control, event) in
+                    let data: Any = name == "valueChanged" ? getValueFromControl(control) : event
+                    viewController.handleEvent(id: id, name: name, data: data)
                 })
             }
         }
@@ -267,6 +279,14 @@ class Renderer: NSObject {
         }
     }
 
+    static func getValueFromControl(_ control: UIControl) -> Float {
+        switch control {
+        case is UISlider:
+            return (control as! UISlider).value
+        default:
+            return 0
+        }
+    }
 
     /* APPLY FACTS */
 
@@ -284,6 +304,8 @@ class Renderer: NSObject {
             break
         case "switch":
             applySwitchFacts(switch_: view as! UISwitch, facts: facts)
+        case "slider":
+            applySliderFacts(slider: view as! UISlider, facts: facts)
         default:
             break
         }
@@ -431,6 +453,35 @@ class Renderer: NSObject {
             case "isOn":
                 if let value = facts[key] as? Bool {
                     switch_.isOn = value
+                }
+                break
+            default:
+                break
+            }
+        }
+    }
+    
+    static func applySliderFacts(slider: UISlider, facts: Json) {
+        for key in facts.keys.sorted() {
+            switch key {
+            case "value":
+                if let value = facts[key] as? Float {
+                    slider.value = value
+                }
+                break
+            case "minimumValue":
+                if let value = facts[key] as? Float {
+                    slider.minimumValue = value
+                }
+                break
+            case "maximumValue":
+                if let value = facts[key] as? Float {
+                    slider.maximumValue = value
+                }
+                break
+            case "isContinuous":
+                if let value = facts[key] as? Bool {
+                    slider.isContinuous = value
                 }
                 break
             default:
