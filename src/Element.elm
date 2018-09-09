@@ -7,6 +7,7 @@ module Element
         , button
         , slider
         , switch
+        , stepper
         , column
         , row
         , map
@@ -60,6 +61,12 @@ slider properties =
 switch : List (Attribute msg) -> Element msg
 switch properties =
     Internal.leaf "switch" properties
+
+
+{-| -}
+stepper : List (Attribute msg) -> Element msg
+stepper properties =
+    Internal.leaf "stepper" properties
 
 
 {-| -}

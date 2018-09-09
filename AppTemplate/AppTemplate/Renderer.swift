@@ -97,6 +97,17 @@ class Renderer: NSObject {
                             }
                         }
                         return slider
+                    case "stepper":
+                        let stepper: UIStepper = UIStepper(frame: CGRect.zero)
+                        applyFacts(view: stepper, facts: facts, tag: tag)
+                        if !handlers.isEmpty {
+                            let handlerNode = handlers[handlersIndex] as Json
+                            if let handlerOffset = handlerNode["offset"] as? Int, handlerOffset == offset, let funcs = handlerNode["funcs"] as? Json, let eventId = handlerNode["eventId"] as? UInt64 {
+                                addControlHandlers(funcs, id: eventId, view: stepper)
+                                handlersIndex += 1
+                            }
+                        }
+                        return stepper
                     case "image":
                         if let src = facts["src"] as? String, let imageUrl = URL(string: "assets/" + src) {
                             let fileName = imageUrl.deletingPathExtension().lastPathComponent
@@ -279,10 +290,12 @@ class Renderer: NSObject {
         }
     }
 
-    static func getValueFromControl(_ control: UIControl) -> Float {
+    static func getValueFromControl(_ control: UIControl) -> Any {
         switch control {
         case is UISlider:
             return (control as! UISlider).value
+        case is UIStepper:
+            return (control as! UIStepper).value
         default:
             return 0
         }
@@ -304,8 +317,13 @@ class Renderer: NSObject {
             break
         case "switch":
             applySwitchFacts(switch_: view as! UISwitch, facts: facts)
+            break
         case "slider":
             applySliderFacts(slider: view as! UISlider, facts: facts)
+            break
+        case "stepper":
+            applyStepperFacts(stepper: view as! UIStepper, facts: facts)
+            break
         default:
             break
         }
@@ -490,6 +508,35 @@ class Renderer: NSObject {
         }
     }
 
+    static func applyStepperFacts(stepper: UIStepper, facts: Json) {
+        for key in facts.keys.sorted() {
+            switch key {
+            case "value":
+                if let value = facts[key] as? Double {
+                    stepper.value = value
+                }
+                break
+            case "minimumValue":
+                if let value = facts[key] as? Double {
+                    stepper.minimumValue = value
+                }
+                break
+            case "maximumValue":
+                if let value = facts[key] as? Double {
+                    stepper.maximumValue = value
+                }
+                break
+            case "isContinuous":
+                if let value = facts[key] as? Bool {
+                    stepper.isContinuous = value
+                }
+                break
+            default:
+                break
+            }
+        }
+    }
+    
     static func applyYogaFacts(view: UIView, facts: Json) {
         view.configureLayout { (layout) in
             layout.isEnabled = true
