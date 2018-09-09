@@ -296,6 +296,8 @@ class Renderer: NSObject {
             return (control as! UISlider).value
         case is UIStepper:
             return (control as! UIStepper).value
+        case is UISwitch:
+            return (control as! UISwitch).isOn
         default:
             return 0
         }

@@ -17,7 +17,7 @@ import Element.Attributes
         , justifyContent
         , text
         )
-import Element.Events exposing (onTouchUpInside)
+import Element.Events exposing (onTouchUpInside, onBoolValueChanged)
 
 
 main : Program Never Model Msg
@@ -49,11 +49,13 @@ init =
 
 type Msg
     = SwitchToggled
+    | SwitchValueChanged Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        SwitchValueChanged bool -> ( bool, Cmd.none )
         SwitchToggled ->
             ( if model then
                 False
@@ -83,6 +85,6 @@ view model =
                 else
                     "Off"
             ]
-        , switch [ isOn model, onTouchUpInside SwitchToggled ]
+        , switch [ isOn model, onBoolValueChanged SwitchValueChanged ]
         , button [ text "Toggle It!", onTouchUpInside SwitchToggled ]
         ]
